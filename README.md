@@ -11,9 +11,7 @@ Limitations: You must open your completed PDFs with Mac Preview.  Adobe products
 
 Methods:
 get_field_keys(input_pdf_path) 
-   This makes a CSV template that can be imported into
-   excel that you can fill with your information.  This spread sheet will then be exported
-   as a CSV and then used as an argument in the write_fillable_pdf method.    
+This makes a CSV template that can be imported into excel that you can fill with your information.  Export the spreadsheet as a CSV and then used as an argument in the write_fillable_pdf method.    
 
 write_fillable_pdfs(input_CSV, input_pdf_template)
-   This method will write your PDF files as specifde in the input_CSV
+This method will write your PDF files as specifde in the input_CSV
