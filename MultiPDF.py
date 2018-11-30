@@ -1,28 +1,6 @@
 #MultiPDF
 #Version 1.0
 
-
-#These functions allows you to fill PDFs that have fillable fields using an excel spreadsheet.  
-#
-# If you need to fill 20 PDFs with different information, this module should work 
-#   with some stipulations
-
-#Limitations: You must open your completed PDFs with Mac Preview.  Adobe products will
-#             not work.  
-#             If you are getting errors regarding encryption, you may have to use
-#             https://smallpdf.com/unlock-pdf to unlock the PDF
-
-
-#Methods:
-#get_field_keys(input_pdf_template) 
-#   This makes a CSV template that can be imported into
-#   excel that you can fill with your information.  This spread sheet will then be exported
-#   as a CSV and then used as an argument in the write_fillable_pdf method.    
-
-#write_fillable_pdfs(input_CSV, input_pdf_template)
-#   This method will write your PDF files as specifde in the input_CSV
-
-
 #! /usr/bin/python
 
 import os
@@ -161,27 +139,7 @@ def makePdfs(input_CSV, input_pdf_template):
     template_pdf = pdfrw.PdfReader(input_pdf_template)
     annotations = template_pdf.pages[0][ANNOT_KEY]
 
-    #Get font and font size
-    flag=False
-    for annotation in annotations:
-        if annotation[SUBTYPE_KEY] == WIDGET_SUBTYPE_KEY:
-            if annotation[ANNOT_FIELD_KEY]:
-                key = annotation[ANNOT_FIELD_KEY][1:-1]
-                print('\n\n',key)
-            if annotation[ANNOT_APEARANCE_KEY] and annotation[ANNOT_APEARANCE_KEY] is not None:
-                example_AP_dictionary=pdfrw.PdfDict({'/AP':annotation[ANNOT_APEARANCE_KEY]})
-                
-                print(example_AP_dictionary['/AP']['/N'], '\n\n')
-                #with open("data_file.json", "w") as write_file:
-                    #json.dump(example_AP_dictionary, write_file)
-                #with open('data_file.json','r') as data:
-                    #example_AP_dictionary=pdfrw.PdfDict(json.load(data))
-                
-                flag=True
-                break
-    if flag==False:
-        raise Exception('You must fill one of the PDF fields with text so we can get the right font and such')
-
+    
     #Lets make some PDFs
     for i in range(file_ammount):
         
@@ -218,53 +176,17 @@ def makePdfs(input_CSV, input_pdf_template):
                         )
                        
                         annotation.update(
-                        pdfrw.PdfDict(example_AP_dictionary)
+                        pdfrw.PdfDict(AP='{}'.format({'/N': (144, 0)}))
                         )
 
                         
-                        
+                        annotation.update(
+                        pdfrw.PdfDict(DA='{}'.format('/Helv 0 Tf 0 g'))
+                        )
 
         pdfrw.PdfWriter().write(PDF_file_path+'.pdf', template_pdf)
 
-def printDic(inputPdf):
 
-    #load up pdf template
-    template_pdf = pdfrw.PdfReader(inputPdf)
-    annotations = template_pdf.pages[0][ANNOT_KEY]
-    print('-------------------------------------------------------')
-
-    for annotation in annotations:
-        try:
-            '''print('\n',annotation['/T'])
-            print(annotation['/AP'])
-            print(example_AP_dictionary['/AP'])    
-            print(annotation['/AP']['/N'],'\n') '''       
-            
-            
-        except:
-            
-            continue
-        
-
-    annotation=annotations[1]
-    example_AP_dictionary=pdfrw.PdfDict(annotation[ANNOT_APEARANCE_KEY])
-    print(type(example_AP_dictionary))
-
-    #example_AP_dictionary= {'/AP':example_AP_dictionary}
-    
-    example_AP_dictionary=pdfrw.PdfDict(example_AP_dictionary)
-    
-    print(type(example_AP_dictionary))
-    print(template_pdf.BasePdfName)
-
-
-    print(example_AP_dictionary.keys())
-
-    print(example_AP_dictionary['/AP']['/N'])
-    with open("data_file.json", "w") as write_file:
-                json.dump(example_AP_dictionary, write_file)
-            #with open('data_file.json','r') as data:
-                #example_AP_dictionary=pdfrw.PdfDict(json.load(data))
 
 if __name__ == "__main__":
     #makeCsv('Jacob_DA31.pdf')
@@ -272,8 +194,4 @@ if __name__ == "__main__":
     #makePdfs('PDF_Fields.csv','Jacob_DA31.pdf')
     #makePdfs('PDF_Fields.csv','DA-31-unlocked.pdf')
     #makePdfs('PDF_Fields.csv','PDF_Template.pdf')
-    printDic('DA-31-unlocked.pdf')
-    
-    
     pass
-
