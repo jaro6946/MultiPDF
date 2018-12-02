@@ -11,6 +11,11 @@ Adobe products will not work to open these files for reasons talked about here h
 
 Usage
 
+Zeroth step, install pdfrw
+
+pip3 install pdfrw
+
+
 First step, make csv template:
 
 python3 MultiPDF.py ExamplePDF.pdf
