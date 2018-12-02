@@ -51,7 +51,7 @@ def makeCsv(input_pdf_template):
 
     with open('PDF_Fields.csv', 'w', newline='') as csvfile:
         list_fields_and_values=list(dict_fields_and_values.items())
-        csvfile.write('Name ending files: ,project, \n Folder name: ,folder,\n Folder Path: ,Current Directory,\n')
+        csvfile.write('Name ending files: ,_project, \n Folder name: ,folder,\n Folder Path: ,Current Directory,\n')
         csvfile.write('Name begining files:,PDF Name 1, PDF Name 2, PDF Name 3, Etc,\n')
         for fields_values in list_fields_and_values:
             fields_values=list(fields_values)
@@ -132,7 +132,6 @@ def makePdfs(input_CSV, input_pdf_template):
   
 
     
-
     #put pdf names into list
     PDF_Names=[]
     
