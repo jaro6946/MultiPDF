@@ -3,6 +3,18 @@
 
 #! /usr/bin/python
 
+'''
+Usage
+
+First step, make csv template:
+python3 MultiPDF.py ExamplePDF.pdf
+
+Next step, Edit your CSV with the info you want to put in your pdfs and save
+
+Final step, make your pdfs:
+python3 MultiPDF.py PDF_Fields.csv ExamplePDF.pdf
+
+'''
 import os
 import pdfrw
 import sys
