@@ -1,3 +1,5 @@
+Welcome to the README, like the wiki, but without pictures!
+
 MultiPDF Version 1.0
 
 This Python project allows you to fill PDFs that have fillable fields using an excel spreadsheet, a function know as mail merging. If you need to fill 20 PDFs with different information from a spreadsheet, this module should work with some stipulations.  It will create the the individual pdfs and one combined pdf for easy printing.
