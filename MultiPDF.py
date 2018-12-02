@@ -5,7 +5,8 @@
 
 import os
 import pdfrw
-import json
+import sys
+from pdfrw import PdfReader, PdfWriter, IndirectPdfDict
 
 ANNOT_KEY = '/Annots'
 ANNOT_FIELD_KEY = '/T'
@@ -46,12 +47,9 @@ def makeCsv(input_pdf_template):
                 fields_values[1]=''
             csvfile.write('%s,%s \n' %(fields_values[0],fields_values[1]))
 
-    pdfrw.PdfWriter().write(os.getcwd()+'/'+'PDF_Template.pdf', input_pdf_template)
+    pdfrw.PdfWriter().write(os.getcwd()+'/'+'PDF_Template.pdf', template_pdf)
 
-    print('\n\n\nI made you a CSV file called PDF_Fields.csv in your current directory.  If you are just checking out the', 
-        ' program, feel free to just edit the CSV file for the next step.  If you want to make a lot of PDFs, it will be easier to import',
-        ' the CSV to excel and add your form information.  You will then need to export it to a CSV to import it into the makePdfs function\n\n\n'
-    )
+    
             
 
 def makePdfs(input_CSV, input_pdf_template):
@@ -98,7 +96,7 @@ def makePdfs(input_CSV, input_pdf_template):
 
     for i, rows in enumerate(table):
         for j, cells in enumerate(rows[1:]):
-            j=j+1
+            
             
             if rows[j]=='Current Directory':
                 rows[j]=os.getcwd()
@@ -139,7 +137,7 @@ def makePdfs(input_CSV, input_pdf_template):
     template_pdf = pdfrw.PdfReader(input_pdf_template)
     annotations = template_pdf.pages[0][ANNOT_KEY]
 
-    
+    inputName=[]
     #Lets make some PDFs
     for i in range(file_ammount):
         
@@ -154,8 +152,8 @@ def makePdfs(input_CSV, input_pdf_template):
         destination_folder=working_directory+folder[0]+'/'
         file_name=table[3][i+1]
         name_ending_each_file=table[0][i+1]
-        PDF_file_path=destination_folder+'/'+file_name+name_ending_each_file
-    
+        PDF_file_path=destination_folder+file_name+name_ending_each_file+'.pdf'
+        inputName=inputName+[PDF_file_path]
         
         
         #create dictionary of form keys and items information
@@ -184,14 +182,50 @@ def makePdfs(input_CSV, input_pdf_template):
                         pdfrw.PdfDict(DA='{}'.format('/Helv 0 Tf 0 g'))
                         )
 
-        pdfrw.PdfWriter().write(PDF_file_path+'.pdf', template_pdf)
+        pdfrw.PdfWriter().write(PDF_file_path, template_pdf)
 
+    assert inputName
+    outfn = destination_folder+'/'+'combined.pdf'
+    writer = PdfWriter()
+    for inpfn in inputName:
+        writer.addpages(PdfReader(inpfn).pages)
 
+    writer.write(outfn)
 
 if __name__ == "__main__":
-    #makeCsv('Jacob_DA31.pdf')
-    #makeCsv('DA-31-unlocked.pdf')
-    #makePdfs('PDF_Fields.csv','Jacob_DA31.pdf')
-    #makePdfs('PDF_Fields.csv','DA-31-unlocked.pdf')
-    #makePdfs('PDF_Fields.csv','PDF_Template.pdf')
-    pass
+    
+    
+    print('\n\n\n\n\n\n\n\n\n-------------------------------------------------------\n\n')
+    arguments=sys.argv[1:]
+    if len(arguments)==1:
+        print('Making your csv template!')
+        makeCsv(arguments[0])
+        print('\n\n\nI made you a CSV file called PDF_Fields.csv in your current directory.  If you are just checking out the', 
+        ' program, feel free to just edit the CSV file for the next step.  If you want to make a lot of PDFs, it will be easier to import',
+        ' the CSV to excel and add your form information.  You will then need to save it as a CSV to import it into the next step\n\n\n'
+    )
+        
+    elif len(arguments)==2:
+        print('Making your pdfs!')
+        makePdfs(arguments[0],arguments[1])
+        print('\n\n\nI made them!  The individual PDFs and combined PDF will work best in '
+        'Mac Preview.  The individual PDFs can be printed from Chrome, but not the '
+        'combined PDF.  Adobe will not work with any of these PDFs\n\n\n')
+
+    else:
+        print('\n\n\nYou put in the wrong number of arguments.  Lets try that again. '
+        'Put in your the name of your pdf to include the .pdf if this is your first step '
+        'or you need the csv template.  I.e. "python3 MultiPDF my.pdf" in your terminal'
+        '.  \n\n\nIf you are now trying to make your pdfs try python3 MultiPDF PDF_Fields.csv '
+        'my.pdf \n\n\n')
+   
+    print('-------------------------------------------------------\n\n\n')
+
+
+
+    
+    
+
+
+    
+
